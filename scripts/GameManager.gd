@@ -14,17 +14,11 @@ func _ready():
 		player1.health_changed.connect(_on_player1_health_changed)
 		player1.player_died.connect(_on_player1_died)
 		player1.score_changed.connect(_on_player1_score_changed)
-		player1.skill_activated.connect(_on_skill_activated)
+
 	if player2:
 		player2.health_changed.connect(_on_player2_health_changed)
 		player2.player_died.connect(_on_player2_died)
 		player2.score_changed.connect(_on_player2_score_changed)
-		player2.skill_activated.connect(_on_skill_activated)
-
-func _on_skill_activated(pid: int, skill_name: String):
-	var preview_node = get_parent().get_node_or_null("SkillPreviewLayer")
-	if preview_node:
-		preview_node.show_skill_preview(pid, skill_name)
 
 func _on_player1_health_changed(new_health):
 	if ui_layer and ui_layer.has_node("TopBar/Player1HPBar"):

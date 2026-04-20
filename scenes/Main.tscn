@@ -1,11 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://ck2uob4i2uef9"]
+[gd_scene load_steps=8 format=3 uid="uid://ck2uob4i2uef9"]
 
 [ext_resource type="Script" path="res://scripts/GameManager.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/Player.gd" id="2"]
 [ext_resource type="Texture2D" uid="uid://b4jvnueow4i5h" path="res://assets/background.png" id="5"]
 [ext_resource type="Texture2D" path="res://assets/yutap2-removebg-preview.png" id="6"]
 [ext_resource type="Texture2D" path="res://assets/gojop1-removebg-preview.png" id="7"]
-[ext_resource type="Script" path="res://scripts/SkillPreview.gd" id="8"]
+
 [ext_resource type="Script" path="res://scripts/MinionSpawner.gd" id="9"]
 [ext_resource type="Script" path="res://scripts/Destructible.gd" id="10"]
 
@@ -83,9 +83,6 @@ object_type = "torii_pillar"
 [node name="MinionSpawner" type="Node" parent="."]
 script = ExtResource("9")
 
-[node name="SkillPreviewLayer" type="CanvasLayer" parent="."]
-layer = 15
-script = ExtResource("8")
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 layer = 10

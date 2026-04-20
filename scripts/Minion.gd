@@ -11,6 +11,9 @@ var floor_y: float = 350.0
 
 func _ready():
 	add_to_group("minion")
+	# Put minions on layer 2 so they don't physically push against players (layer 1)
+	collision_layer = 2
+	collision_mask = 2
 	build_visual()
 	build_collision()
 
@@ -107,7 +110,7 @@ func die(attacker: Node = null):
 		p.global_position = global_position + Vector2(randf_range(-10, 10), randf_range(-20, 0))
 		var a = randf() * TAU
 		var d = randf_range(20, 50)
-		var tw = create_tween()
+		var tw = get_tree().create_tween()
 		tw.set_parallel(true)
 		tw.tween_property(p, "position", p.position + Vector2(cos(a) * d, sin(a) * d), 0.4)
 		tw.tween_property(p, "modulate", Color.TRANSPARENT, 0.4)

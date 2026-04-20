@@ -41,7 +41,7 @@ var is_dead: bool = false
 signal health_changed(new_health)
 signal player_died
 signal score_changed(new_score)
-signal skill_activated(player_id, skill_name)
+
 
 func _ready():
 	health = max_health
@@ -185,7 +185,7 @@ func perform_punch():
 func perform_special():
 	can_special = false
 	special_timer = special_cooldown
-	emit_signal("skill_activated", player_id, "special")
+
 	if player_id == 1:
 		create_yuta_special()
 	else:
@@ -194,7 +194,7 @@ func perform_special():
 func perform_ultimate():
 	can_ultimate = false
 	ultimate_timer = ultimate_cooldown
-	emit_signal("skill_activated", player_id, "ultimate")
+
 	if player_id == 1:
 		create_yuta_ultimate()
 	else:
@@ -203,7 +203,7 @@ func perform_ultimate():
 func perform_cursed_burst():
 	can_cursed_burst = false
 	cursed_burst_timer = cursed_burst_cooldown
-	emit_signal("skill_activated", player_id, "cursed_burst")
+
 	var ring = Line2D.new()
 	ring.width = 3.0
 	ring.default_color = Color(0.6, 0.0, 0.9, 0.9)
@@ -253,7 +253,7 @@ func perform_cursed_burst():
 func perform_blue_pull():
 	can_blue_pull = false
 	blue_pull_timer = blue_pull_cooldown
-	emit_signal("skill_activated", player_id, "blue_pull")
+
 	for i in range(10):
 		var pt = ColorRect.new()
 		pt.size = Vector2(5, 5)

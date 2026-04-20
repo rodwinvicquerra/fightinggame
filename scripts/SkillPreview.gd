@@ -10,15 +10,17 @@ func _ready():
 
 func show_skill_preview(pid: int, skill_name: String):
 	var preview = TextureRect.new()
+	var preview_w = 90
+	var preview_h = 120
 	if pid == 1:
 		preview.texture = yuta_preview_texture
-		preview.position = Vector2(10, 150)
+		preview.position = Vector2(4, 80)
 	else:
 		preview.texture = gojo_preview_texture
-		preview.position = Vector2(610, 150)
+		preview.position = Vector2(800 - preview_w - 4, 80)
 	preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	preview.custom_minimum_size = Vector2(170, 230)
-	preview.size = Vector2(170, 230)
+	preview.custom_minimum_size = Vector2(preview_w, preview_h)
+	preview.size = Vector2(preview_w, preview_h)
 	preview.modulate = Color(1, 1, 1, 0)
 	add_child(preview)
 	var tw = create_tween()
