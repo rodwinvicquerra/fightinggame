@@ -1,0 +1,188 @@
+[gd_scene load_steps=9 format=3 uid="uid://ck2uob4i2uef9"]
+
+[ext_resource type="Script" path="res://scripts/GameManager.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/Player.gd" id="2"]
+[ext_resource type="Texture2D" uid="uid://b4jvnueow4i5h" path="res://assets/background.png" id="5"]
+[ext_resource type="Texture2D" path="res://assets/yutap2-removebg-preview.png" id="6"]
+[ext_resource type="Texture2D" path="res://assets/gojop1-removebg-preview.png" id="7"]
+[ext_resource type="Script" path="res://scripts/SkillPreview.gd" id="8"]
+[ext_resource type="Script" path="res://scripts/MinionSpawner.gd" id="9"]
+[ext_resource type="Script" path="res://scripts/Destructible.gd" id="10"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_player1"]
+size = Vector2(40, 50)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_player2"]
+size = Vector2(40, 50)
+
+[node name="Main" type="Node2D"]
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(400, 300)
+scale = Vector2(1.28, 1.44)
+texture = ExtResource("5")
+z_index = -1
+
+[node name="GameManager" type="Node" parent="."]
+script = ExtResource("1")
+
+[node name="Player1" type="CharacterBody2D" parent="."]
+position = Vector2(320, 350)
+script = ExtResource("2")
+player_id = 1
+max_health = 100
+move_speed = 200.0
+punch_damage = 10
+special_damage = 25
+
+[node name="Sprite2D" type="Sprite2D" parent="Player1"]
+texture = ExtResource("6")
+offset = Vector2(0, -10)
+scale = Vector2(0.15, 0.15)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player1"]
+position = Vector2(0, -10)
+shape = SubResource("RectangleShape2D_player1")
+
+[node name="Player2" type="CharacterBody2D" parent="."]
+position = Vector2(480, 350)
+script = ExtResource("2")
+player_id = 2
+max_health = 100
+move_speed = 200.0
+punch_damage = 10
+special_damage = 25
+
+[node name="Sprite2D" type="Sprite2D" parent="Player2"]
+texture = ExtResource("7")
+offset = Vector2(0, -10)
+scale = Vector2(0.15, 0.15)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player2"]
+position = Vector2(0, -10)
+shape = SubResource("RectangleShape2D_player2")
+
+[node name="Crate" type="StaticBody2D" parent="."]
+position = Vector2(200, 350)
+script = ExtResource("10")
+max_hp = 30
+object_type = "crate"
+
+[node name="CursedStone" type="StaticBody2D" parent="."]
+position = Vector2(400, 350)
+script = ExtResource("10")
+max_hp = 30
+object_type = "cursed_stone"
+
+[node name="ToriiPillar" type="StaticBody2D" parent="."]
+position = Vector2(600, 350)
+script = ExtResource("10")
+max_hp = 30
+object_type = "torii_pillar"
+
+[node name="MinionSpawner" type="Node" parent="."]
+script = ExtResource("9")
+
+[node name="SkillPreviewLayer" type="CanvasLayer" parent="."]
+layer = 15
+script = ExtResource("8")
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="TopBar" type="HBoxContainer" parent="UILayer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 10.0
+offset_right = -20.0
+offset_bottom = 60.0
+
+[node name="Player1Label" type="Label" parent="UILayer/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Yuta (P1)"
+horizontal_alignment = 0
+
+[node name="Player1HPBar" type="ProgressBar" parent="UILayer/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="Player1HPLabel" type="Label" parent="UILayer/TopBar"]
+layout_mode = 2
+text = "100/100"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="UILayer/TopBar"]
+layout_mode = 2
+custom_minimum_size = Vector2(40, 0)
+
+[node name="Player2HPLabel" type="Label" parent="UILayer/TopBar"]
+layout_mode = 2
+text = "100/100"
+horizontal_alignment = 1
+
+[node name="Player2HPBar" type="ProgressBar" parent="UILayer/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="Player2Label" type="Label" parent="UILayer/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Gojo (P2)"
+horizontal_alignment = 2
+
+[node name="ScoreBar" type="HBoxContainer" parent="UILayer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 55.0
+offset_right = -20.0
+offset_bottom = 80.0
+
+[node name="Player1Score" type="Label" parent="UILayer/ScoreBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "P1 Score: 0"
+horizontal_alignment = 0
+
+[node name="ScoreSpacer" type="Control" parent="UILayer/ScoreBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Player2Score" type="Label" parent="UILayer/ScoreBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "P2 Score: 0"
+horizontal_alignment = 2
+
+[node name="ControlsLabel" type="Label" parent="UILayer"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -30.0
+offset_bottom = -5.0
+text = "P1: A/D move | W jump | V punch | B special | N ultimate | L burst    P2: Arrows | I punch | O special | P ultimate | M pull"
+horizontal_alignment = 1
+
+[node name="GameOverLabel" type="Label" parent="UILayer"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -40.0
+offset_right = 200.0
+offset_bottom = 40.0
+text = "GAME OVER"
+horizontal_alignment = 1
+vertical_alignment = 1
