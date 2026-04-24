@@ -1,15 +1,19 @@
-# Duck vs Gojo - Fighting Game
+# Jujutsu Kaisen 2D Game
 
-A 2D pixel art fighting game built with Godot 4.2 featuring Duck and Gojo characters with sword combat mechanics.
+A 2D fighting game built with Godot 4.2 featuring Yuta (P1) vs Gojo (P2) with cursed-energy combat mechanics.
 
 ## Features
 
-✅ Two-player local fighting game
-✅ Sword combat with slash effects
-✅ Real-time HP bar system
-✅ Character collision and damage system
-✅ Smooth animations and visual feedback
-✅ Game over detection and restart functionality
+✅ Two-player local PvP fighting  
+✅ Survival mode (both vs minion waves)  
+✅ Battlefield background (background.new.png, fills 800×600)  
+✅ Players stand at ground level (y=520), not mid-air  
+✅ Jump-able platforms — 3 platforms at different heights  
+✅ Double-jump with dust effects  
+✅ Minions only die when HIT — no passive contact damage  
+✅ Destructible objects (Crate, Cursed Stone, Torii Pillar)  
+✅ Full special move set: Punch / Special / Ultimate / Burst/Pull  
+✅ HP bars, score, game-over detection  
 
 ## Game Controls
 

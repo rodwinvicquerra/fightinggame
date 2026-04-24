@@ -21,5 +21,5 @@ func spawn_minion():
 	minion.set_script(load("res://scripts/Minion.gd"))
 	var side = randi() % 2
 	var spawn_x = 60.0 if side == 0 else 740.0
-	minion.position = Vector2(spawn_x, 350)
+	minion.position = Vector2(spawn_x, 520)
 	get_parent().add_child(minion)

@@ -1,4 +1,4 @@
-# Duck vs Gojo - Setup Guide
+# Jujutsu Kaisen 2D Game - Setup Guide
 
 ## Quick Start
 

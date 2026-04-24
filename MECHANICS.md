@@ -1,66 +1,83 @@
-# Game Mechanics Documentation
+# Game Mechanics Documentation  
+_Last updated: 2026-04-25_
+
+---
+
+## Viewport & World Layout
+
+| Property | Value |
+|---|---|
+| Viewport | 800 × 600 px |
+| Ground Y | 535 px (player feet level) |
+| Player spawn P1 | (200, 520) |
+| Player spawn P2 | (600, 520) |
+| Boundary X | 50 – 750 px |
+
+### Platforms (jump-able)
+| Name | Position | Top face Y | Reachable from |
+|---|---|---|---|
+| Platform1 (left) | (155, 470) | 460 | Ground — 1 jump |
+| Platform2 (right) | (645, 470) | 460 | Ground — 1 jump |
+| Platform3 (center-high) | (400, 395) | 385 | Ground — double jump |
+
+---
+
+## Movement & Jump Physics
+
+| Property | Value |
+|---|---|
+| Move speed | 200 px/s |
+| Gravity | 800 px/s² |
+| Jump force | −350 px/s |
+| Max jumps | 2 (double jump) |
+| Single jump reach | ~77 px above ground |
+| Double jump reach | ~153 px above ground |
+
+Floor detection uses CharacterBody2D `is_on_floor()` — players land on Ground, Platform1, Platform2, and Platform3 via physics collision.
+
+---
 
 ## Combat System
 
-### Basic Mechanics
-- Players face each other and can move left/right
-- Swords are always held by characters and swing when attacking
-- Combat is turn-based with cooldown between attacks
-- Each hit reduces opponent's HP
+### Player Attacks (both modes)
+| Attack | Key P1 | Key P2 | Damage | Cooldown | Range |
+|---|---|---|---|---|---|
+| Punch | V | I | 10 HP | 0.25 s | 45 px |
+| Special | B | O | 25 HP | 1.5 s | varies |
+| Ultimate | N | P | 20 HP | 10 s | 160 px |
+| Cursed Burst (P1) / Blue Pull (P2) | L | M | 15–20 HP | 3 s | 90–150 px |
 
-### Sword Mechanics
+### Hit Detection
+- All attacks use distance + facing direction checks (no physics overlap)
+- Punch: checks `punch_range = 45 px` + must be facing target
+- Specials/Ultimates: area-of-effect radius checks
 
-#### Attack Activation
-- Press attack button to swing sword
-- Sword swings in the direction the player is facing
-- 0.5 second cooldown between attacks to prevent spam
-- Visual animation shows sword rotation
+---
 
-#### Hit Detection
-Two types of collision detection:
+## Minion System (Survival Mode only)
 
-1. **Sword-to-Sword Collision**
-   - When both players swing simultaneously
-   - Creates slash effect at collision point
-   - No damage dealt (both attacks cancel out)
-   - Visual feedback: particles/effect animation
+- Spawns every 3 s from left/right edges (max 8 on screen)
+- Minions **walk toward the nearest player**
+- Minions **do NOT deal contact damage** — they are targets only
+- Players must **actively hit minions** to kill them (punch, special, ultimate)
+- Killing a minion awards +15 score to the attacker
+- Minions use manual floor tracking (floor_y = 520), stay at ground level
 
-2. **Sword-to-Body Collision**
-   - When sword hits opponent's body
-   - Deals 25 HP damage per hit
-   - HP bar updates immediately
-   - Visual feedback: hit effect animation
+### Why no contact damage?
+Minions serve as moving score targets. Contact damage was removed so players can focus on fighting each other while also managing the crowd — making survival mode a skill test, not a passive damage race.
 
-#### Damage System
-- Each sword hit: **25 HP damage**
-- Total HP per player: **100 HP**
-- Winner: First to reduce opponent to 0 HP
-- Minimum attacks to win: 4 hits
-
-### Movement System
-
-#### Controls
-- **Left Input**: Move character left at 300 pixels/second
-- **Right Input**: Move character right at 300 pixels/second
-- Movement is continuous while holding button
-- Boundary checking prevents moving off screen
-
-#### Movement Boundaries
-- Left boundary: x = 50 pixels
-- Right boundary: x = 750 pixels
-- Map width: 800 pixels total
-- Vertical position: Fixed (no jumping)
+---
 
 ## HP System
 
 ### Health Bar Display
 - Positioned at top of screen
 - Shows 100 HP maximum per player
-- Color coding:
-  - Green: 75-100 HP (healthy)
-  - Yellow: 50-74 HP (damaged)
-  - Red: 0-49 HP (critical)
-  
+- Color coding (set in GameManager):
+  - Green: 75–100 HP (healthy)
+  - Yellow: 50–74 HP (damaged)
+  - Red: 0–49 HP (critical)
+
 ### Damage Application
 ```
 On sword hit:

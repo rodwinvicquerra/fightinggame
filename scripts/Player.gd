@@ -30,8 +30,7 @@ var frozen_timer: float = 0.0
 
 var gravity: float = 800.0
 var jump_force: float = -350.0
-var is_on_floor: bool = true
-var floor_y: float = 0.0
+var on_ground: bool = true
 var jump_count: int = 0
 var max_jumps: int = 2
 
@@ -46,7 +45,6 @@ signal score_changed(new_score)
 func _ready():
 	health = max_health
 	score = 0
-	floor_y = position.y
 	emit_signal("health_changed", health)
 	emit_signal("score_changed", score)
 	if player_id == 2:
@@ -63,19 +61,18 @@ func _physics_process(delta):
 	else:
 		handle_input()
 	handle_cooldowns(delta)
-	if not is_on_floor:
+	var was_on_floor = is_on_floor()
+	if not was_on_floor:
 		velocity.y += gravity * delta
 	else:
-		velocity.y = 0
+		if velocity.y > 0:
+			velocity.y = 0
 	velocity.x = current_velocity
 	move_and_slide()
-	if position.y >= floor_y:
-		position.y = floor_y
-		if not is_on_floor:
-			is_on_floor = true
-			jump_count = 0
-			create_land_effect()
-		velocity.y = 0
+	on_ground = is_on_floor()
+	if not was_on_floor and on_ground:
+		jump_count = 0
+		create_land_effect()
 	position.x = clamp(position.x, 50, 750)
 
 func handle_input():
@@ -125,7 +122,7 @@ func handle_input():
 
 func perform_jump():
 	jump_count += 1
-	is_on_floor = false
+	on_ground = false
 	velocity.y = jump_force
 	create_jump_effect()
 

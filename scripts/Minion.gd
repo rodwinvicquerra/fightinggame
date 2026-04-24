@@ -7,7 +7,7 @@ var contact_cooldown: float = 1.0
 var contact_timer: float = 0.0
 var is_dead: bool = false
 var gravity_val: float = 800.0
-var floor_y: float = 350.0
+var floor_y: float = 520.0
 
 func _ready():
 	add_to_group("minion")
@@ -58,8 +58,8 @@ func _physics_process(delta):
 		var dir = sign(target.global_position.x - global_position.x)
 		velocity.x = dir * move_speed
 		var dist = (target.global_position - global_position).length()
-		if dist < 30 and contact_timer <= 0:
-			target.take_damage(contact_damage)
+		if dist < 35 and contact_timer <= 0:
+			perform_attack(target)
 			contact_timer = contact_cooldown
 	else:
 		velocity.x = 0
@@ -70,6 +70,36 @@ func _physics_process(delta):
 		position.y = floor_y
 	move_and_slide()
 	position.x = clamp(position.x, 30, 770)
+
+func perform_attack(target: Node):
+	target.take_damage(contact_damage)
+	# Flash minion body orange during attack
+	var visual = get_node_or_null("Visual")
+	if visual:
+		visual.color = Color(1.0, 0.45, 0.0)
+		var ftw = create_tween()
+		ftw.tween_property(visual, "color", Color(0.15, 0.1, 0.2), 0.2)
+	# Spawn 3 slash marks at the target
+	for i in range(3):
+		var slash = ColorRect.new()
+		slash.size = Vector2(randf_range(8, 16), randf_range(3, 6))
+		slash.color = Color(1.0, 0.15, 0.0, 1.0)
+		slash.z_index = 15
+		slash.rotation = randf_range(-0.6, 0.6)
+		get_parent().add_child(slash)
+		slash.global_position = target.global_position + Vector2(randf_range(-12, 12), randf_range(-30, -5))
+		var stw = get_tree().create_tween()
+		stw.set_parallel(true)
+		stw.tween_property(slash, "position", slash.position + Vector2(randf_range(-18, 18), randf_range(-20, -5)), 0.22)
+		stw.tween_property(slash, "modulate", Color.TRANSPARENT, 0.22)
+		stw.set_parallel(false)
+		stw.tween_callback(slash.queue_free)
+	# Brief lunge toward target
+	var lunge_origin = global_position
+	var lunge_dir = sign(target.global_position.x - global_position.x)
+	var ltw = create_tween()
+	ltw.tween_property(self, "global_position", lunge_origin + Vector2(lunge_dir * 12, 0), 0.06)
+	ltw.tween_property(self, "global_position", lunge_origin, 0.10)
 
 func find_nearest_player() -> Node:
 	var players = get_tree().get_nodes_in_group("player")
