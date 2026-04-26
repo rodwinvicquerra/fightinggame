@@ -32,10 +32,17 @@ var gravity: float = 800.0
 var jump_force: float = -350.0
 var on_ground: bool = true
 var jump_count: int = 0
-var max_jumps: int = 2
+var max_jumps: int = 1
 
 var flash_tween: Tween = null
 var is_dead: bool = false
+
+var sfx_punch: AudioStreamPlayer = null
+var sfx_jump: AudioStreamPlayer = null
+var sfx_ultimate: AudioStreamPlayer = null
+var sfx_blue_orb: AudioStreamPlayer = null
+var sfx_blue_orb2: AudioStreamPlayer = null
+var sfx_score: AudioStreamPlayer = null
 
 signal health_changed(new_health)
 signal player_died
@@ -51,6 +58,48 @@ func _ready():
 		facing_right = false
 		$Sprite2D.flip_h = true
 	add_to_group("player")
+	_setup_sounds()
+
+func _setup_sounds():
+	sfx_punch = AudioStreamPlayer.new()
+	sfx_punch.stream = load("res://assets/sounds/punchsound.mp3")
+	sfx_punch.volume_db = -8.0
+	add_child(sfx_punch)
+
+	sfx_jump = AudioStreamPlayer.new()
+	sfx_jump.stream = load("res://assets/sounds/jumpsound.mp3")
+	sfx_jump.volume_db = -6.0
+	add_child(sfx_jump)
+
+	if player_id == 1:
+		sfx_ultimate = AudioStreamPlayer.new()
+		sfx_ultimate.stream = load("res://assets/sounds/yutaultimatesound.mp3")
+		sfx_ultimate.volume_db = -5.0
+		add_child(sfx_ultimate)
+	else:
+		sfx_ultimate = AudioStreamPlayer.new()
+		sfx_ultimate.stream = load("res://assets/sounds/gojotultimatedomain.mp3")
+		sfx_ultimate.volume_db = -5.0
+		add_child(sfx_ultimate)
+
+	sfx_blue_orb = AudioStreamPlayer.new()
+	sfx_blue_orb.stream = load("res://assets/sounds/gojoblueorbsound (2).mp3")
+	sfx_blue_orb.volume_db = -8.0
+	add_child(sfx_blue_orb)
+
+	sfx_blue_orb2 = AudioStreamPlayer.new()
+	sfx_blue_orb2.stream = load("res://assets/sounds/gojoblueorbsound (2).mp3")
+	sfx_blue_orb2.volume_db = -18.0
+	add_child(sfx_blue_orb2)
+
+	sfx_score = AudioStreamPlayer.new()
+	sfx_score.stream = load("res://assets/sounds/scoreincreasesound.mp3")
+	sfx_score.volume_db = -16.0
+	add_child(sfx_score)
+
+func _play_sfx(sfx: AudioStreamPlayer):
+	if sfx and sfx.stream and not sfx.playing:
+		sfx.play()
 
 func _physics_process(delta):
 	if is_dead:
@@ -96,7 +145,7 @@ func handle_input():
 			perform_ultimate()
 		if Input.is_action_just_pressed("p1_cursed_burst") and can_cursed_burst:
 			perform_cursed_burst()
-		if Input.is_action_just_pressed("p1_jump") and jump_count < max_jumps:
+		if Input.is_action_just_pressed("p1_jump") and is_on_floor():
 			perform_jump()
 	elif player_id == 2:
 		if Input.is_action_pressed("gojo_left"):
@@ -117,10 +166,11 @@ func handle_input():
 			perform_ultimate()
 		if Input.is_action_just_pressed("gojo_blue_pull") and can_blue_pull:
 			perform_blue_pull()
-		if Input.is_action_just_pressed("gojo_jump") and jump_count < max_jumps:
+		if Input.is_action_just_pressed("gojo_jump") and is_on_floor():
 			perform_jump()
 
 func perform_jump():
+	_play_sfx(sfx_jump)
 	jump_count += 1
 	on_ground = false
 	velocity.y = jump_force
@@ -157,6 +207,7 @@ func create_land_effect():
 		tw.tween_callback(dust.queue_free)
 
 func perform_punch():
+	_play_sfx(sfx_punch)
 	can_punch = false
 	punch_timer = punch_cooldown
 	var tw = create_tween()
@@ -248,6 +299,7 @@ func perform_cursed_burst():
 	hit_destructibles_in_range(100.0, 20)
 
 func perform_blue_pull():
+	_play_sfx(sfx_blue_orb)
 	can_blue_pull = false
 	blue_pull_timer = blue_pull_cooldown
 
@@ -310,6 +362,7 @@ func hit_destructibles_in_range(attack_range: float, damage: int):
 			obj.take_hit(damage)
 
 func create_yuta_ultimate():
+	_play_sfx(sfx_ultimate)
 	var dir = 1.0 if facing_right else -1.0
 	var overlay = ColorRect.new()
 	overlay.size = Vector2(800, 600)
@@ -368,6 +421,7 @@ func create_yuta_ultimate():
 	hit_destructibles_in_range(160.0, 20)
 
 func create_gojo_ultimate():
+	_play_sfx(sfx_ultimate)
 	var dir = 1.0 if facing_right else -1.0
 	var overlay = ColorRect.new()
 	overlay.size = Vector2(800, 600)
@@ -469,6 +523,7 @@ func create_yuta_special():
 	hit_destructibles_in_range(100.0, special_damage)
 
 func create_gojo_special():
+	_play_sfx(sfx_blue_orb2)
 	var dir = 1.0 if facing_right else -1.0
 	var orb = ColorRect.new()
 	orb.size = Vector2(20, 20)
@@ -644,6 +699,7 @@ func handle_cooldowns(delta):
 			can_blue_pull = true
 
 func add_score(points: int):
+	_play_sfx(sfx_score)
 	score += points
 	emit_signal("score_changed", score)
 

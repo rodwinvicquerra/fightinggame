@@ -73,6 +73,7 @@ func _physics_process(delta):
 
 func perform_attack(target: Node):
 	target.take_damage(contact_damage)
+	spawn_hit_orb(target.global_position)
 	# Flash minion body orange during attack
 	var visual = get_node_or_null("Visual")
 	if visual:
@@ -147,3 +148,52 @@ func die(attacker: Node = null):
 		tw.set_parallel(false)
 		tw.tween_callback(p.queue_free)
 	queue_free()
+
+func spawn_hit_orb(hit_pos: Vector2):
+	# Glowing red-orange orb burst when minion damages a player
+	var orb = ColorRect.new()
+	orb.size = Vector2(18, 18)
+	orb.color = Color(1.0, 0.15, 0.0, 1.0)
+	orb.pivot_offset = Vector2(9, 9)
+	orb.z_index = 20
+	get_parent().add_child(orb)
+	orb.global_position = hit_pos + Vector2(-9, -24)
+	var ring = Line2D.new()
+	ring.width = 2.5
+	ring.default_color = Color(1.0, 0.45, 0.0, 1.0)
+	ring.z_index = 21
+	for ri in range(13):
+		var a = TAU / 12.0 * ri
+		ring.add_point(Vector2(cos(a) * 10, sin(a) * 10))
+	get_parent().add_child(ring)
+	ring.global_position = hit_pos + Vector2(0, -20)
+	# Orb expands and fades
+	var otw = get_tree().create_tween()
+	otw.set_parallel(true)
+	otw.tween_property(orb, "scale", Vector2(2.8, 2.8), 0.28)
+	otw.tween_property(orb, "modulate", Color.TRANSPARENT, 0.28)
+	otw.set_parallel(false)
+	otw.tween_callback(orb.queue_free)
+	# Ring expands and fades
+	var rtw = get_tree().create_tween()
+	rtw.set_parallel(true)
+	rtw.tween_property(ring, "scale", Vector2(3.2, 3.2), 0.3)
+	rtw.tween_property(ring, "modulate", Color.TRANSPARENT, 0.3)
+	rtw.set_parallel(false)
+	rtw.tween_callback(ring.queue_free)
+	# Small sparks flying outward
+	for i in range(5):
+		var sp = ColorRect.new()
+		sp.size = Vector2(5, 5)
+		sp.color = Color(1.0, 0.6, 0.0, 1.0)
+		sp.z_index = 20
+		get_parent().add_child(sp)
+		sp.global_position = hit_pos + Vector2(0, -20)
+		var sa = randf() * TAU
+		var sd = randf_range(15, 35)
+		var stw = get_tree().create_tween()
+		stw.set_parallel(true)
+		stw.tween_property(sp, "position", sp.position + Vector2(cos(sa) * sd, sin(sa) * sd), 0.22)
+		stw.tween_property(sp, "modulate", Color.TRANSPARENT, 0.22)
+		stw.set_parallel(false)
+		stw.tween_callback(sp.queue_free)

@@ -10,6 +10,13 @@ var p2_score: int = 0
 @onready var ui_layer = get_parent().get_node("UILayer")
 
 func _ready():
+	# Game start sound
+	var sfx_start = AudioStreamPlayer.new()
+	sfx_start.stream = load("res://assets/sounds/gamestartsound.mp3")
+	sfx_start.volume_db = 0.0
+	add_child(sfx_start)
+	sfx_start.play()
+
 	if player1:
 		player1.health_changed.connect(_on_player1_health_changed)
 		player1.player_died.connect(_on_player1_died)

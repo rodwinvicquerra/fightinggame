@@ -140,10 +140,10 @@ func take_hit(damage: int):
 	hp -= damage
 	var visual = get_node_or_null("Visual")
 	if visual:
-		visual.modulate = Color.WHITE
+		visual.modulate = Color(1.0, 0.35, 0.35)
 		var tw = create_tween()
 		if tw:
-			tw.tween_property(visual, "modulate", Color(1, 1, 1, 1), 0.15)
+			tw.tween_property(visual, "modulate", Color.WHITE, 0.15)
 	var orig = position
 	var stw = create_tween()
 	if stw:

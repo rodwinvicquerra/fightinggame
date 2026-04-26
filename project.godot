@@ -10,7 +10,7 @@ config/name="Jujutsu Kaisen 2D Game"
 config/description="Jujutsu Kaisen 2D Game - Epic sword fighting between Yuta and Gojo"
 run/main_scene="res://scenes/MainMenu.tscn"
 config/features=PackedStringArray("4.2", "gl_compatibility")
-config/icon="res://assets/duckplayer.png"
+config/icon="res://assets/gojop1-removebg-preview.png"
 
 [autoload]
 
